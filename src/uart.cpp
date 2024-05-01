@@ -73,3 +73,12 @@ void UART::sendFloat(float num, int decimalPlaces) {
     // Exempel: Skicka heltalsdelen och decimaldelen separat som strängar
     // Beroende på dina behov och begränsningar på AVR-plattformen
 }
+
+void UART::readString(char* buffer) {
+    uint8_t i = 0;
+    char c;
+    while ((c = read()) != '\n') {
+        buffer[i++] = c;
+    }
+    buffer[i] = '\0'; // Avsluta strängen med nolltecken
+}

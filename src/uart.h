@@ -9,6 +9,7 @@ public:
     void sendString(const char* str);
     void sendInteger(int num);
     void sendFloat(float num, int decimalPlaces = 2);
+    void readString(char* buffer);
 };
 
 #endif // UART_H

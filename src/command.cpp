@@ -1,6 +1,8 @@
 #include "command.h"
 #include "uart.h"
+#include <string.h> // Lägg till detta för att inkludera strcmp
 #include <stdint.h>
+#include <stdio.h>
 
 CommandParser::CommandParser(Timer* t) : timer(t) {}
 
@@ -8,19 +10,14 @@ void CommandParser::parseCommand() {
     UART uart;
 
     // Läs inkommande tecken från UART
-    char command = uart.read();
+    char command[20];
+    uart.readString(command);
 
-    if (command == 'l') {
-        // Läs in effekten (0-255)
-        uint8_t led_intensity = uart.read() - '0';
-
-        // Läs in tiden (200-5000 ms)
-        char temp = uart.read(); // Läs och kasta bort mellanslag
-        uint16_t time_ms = 0;
-        while (temp != ' ') {
-            time_ms = time_ms * 10 + (temp - '0');
-            temp = uart.read();
-        }
+    if (strcmp(command, "ledpowerfreq") == 0) {
+        // Läs in effekten (0-255) och tiden (200-5000 ms) från kommandot
+        uint8_t led_intensity;
+        uint16_t time_ms;
+        sscanf(command, "ledpowerfreq %hhu %hu", &led_intensity, &time_ms);
 
         // Utför åtgärder baserat på kommandot
         if (time_ms >= 200 && time_ms <= 5000) {
